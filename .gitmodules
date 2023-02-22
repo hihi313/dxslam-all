@@ -1,0 +1,9 @@
+[submodule "dxslam_ros"]
+	path = dxslam_ros
+	url = https://github.com/hihi313/dxslam_ros
+[submodule "deep_features"]
+	path = deep_features
+	url = https://github.com/hihi313/deep_features
+[submodule "dxslam"]
+	path = dxslam
+	url = https://github.com/hihi313/dxslam
