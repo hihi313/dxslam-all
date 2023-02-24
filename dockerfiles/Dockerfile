@@ -3,6 +3,8 @@ FROM osrf/ros:noetic-desktop-full
 ENV TZ=Etc/UTC
 ARG DEBIAN_FRONTEND=noninteractive
 ARG ROOT_PWD=root
+ARG APT_PKGS=apt_packages.txt
+ARG PY_PKGS=requirements.txt
 
 USER root
 # Set root password
@@ -13,14 +15,16 @@ WORKDIR /tmp
 
 # Install 
 RUN apt update 
-COPY ./apt_packages.txt .
-RUN xargs apt install --yes --no-install-recommends < apt_packages.txt \
+COPY ./${APT_PKGS} .
+RUN xargs apt install --yes --no-install-recommends < ${APT_PKGS} \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Python packages
-COPY ./requirements.txt .
-RUN pip3 install --no-cache-dir --requirement requirements.txt
+# Using latest pip (this is the only working way I tried)
+# ADD https://bootstrap.pypa.io/get-pip.py .
+# Install python packages
+COPY ./${PY_PKGS} .
+RUN python3 -m pip install --no-cache-dir --requirement ${PY_PKGS}
 
 # Install Pangolin
 RUN git clone --recursive --branch v0.8 --single-branch https://github.com/stevenlovegrove/Pangolin.git \
@@ -60,8 +64,9 @@ RUN git clone --branch 4.4.0 --single-branch https://github.com/opencv/opencv.gi
 RUN rm -rf /tmp/* /var/tmp/*
 
 # Set up env
-# RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+COPY ./entrypoint.sh /tmp/
+ENTRYPOINT ["/tmp/entrypoint.sh"]
 
 WORKDIR /app
 
-CMD bash 
+CMD ["bash"]

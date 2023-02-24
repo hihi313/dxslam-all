@@ -1,0 +1,3 @@
+tensorflow
+openvino-dev[tensorflow2]
+numpy

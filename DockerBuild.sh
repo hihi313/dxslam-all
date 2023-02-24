@@ -1,12 +1,15 @@
 #!/bin/bash
 
-echo "Sart time=$(date +"%T")"
 IMG_NAME="dxslam-img"
 IMG_TAG="latest"
 CTNR_NAME="dxslam-ctnr"
-WORKDIR="/app"
+WORKDIR="/app/src"
 
 VOLUME=""
+
+echo "Sart time=$(date +"%T")"
+cd dockerfiles
+
 while getopts "bei:t:v:r:" opt
 do
   case $opt in
@@ -58,7 +61,8 @@ do
         # --mount type=volume,src="",dst="" \
         # --mount type=bind,src="",dst="" \
         # --user="$(id -u):$(id -g)" \
-
+        
+        cd ..
         sudo xhost + localhost &&
             docker run -it $RM $GPU $DISPLAY_VOLUME $VOLUME \
                 -e QT_X11_NO_MITSHM=1 \
