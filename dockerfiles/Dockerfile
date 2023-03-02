@@ -13,12 +13,18 @@ RUN echo 'root:${ROOT_PWD}' | chpasswd
 # Install things here
 WORKDIR /tmp
 
+# Set up OpenVINO repo
+# The key cannot download via wget
+COPY ./GPG-PUB-KEY-INTEL-OPENVINO-2021 .
+RUN apt-key add GPG-PUB-KEY-INTEL-OPENVINO-2021 \
+    && echo "deb https://apt.repos.intel.com/openvino/2021 all main" | sudo tee /etc/apt/sources.list.d/intel-openvino-2021.list
 # Install 
 RUN apt update 
 COPY ./${APT_PKGS} .
 RUN xargs apt install --yes --no-install-recommends < ${APT_PKGS} \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
+    
 
 # Using latest pip (this is the only working way I tried)
 # ADD https://bootstrap.pypa.io/get-pip.py .
@@ -31,7 +37,7 @@ RUN git clone --recursive --branch v0.8 --single-branch https://github.com/steve
     && cd Pangolin \
     && mkdir build \
     && cd build \
-    && cmake -D CMAKE_BUILD_TYPE=RELEASE -GNinja ../\
+    && cmake -D CMAKE_BUILD_TYPE=RELEASE -GNinja ../ \
     && ninja \
     && ninja install
 
