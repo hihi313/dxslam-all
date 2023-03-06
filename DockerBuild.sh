@@ -63,7 +63,7 @@ do
         # --user="$(id -u):$(id -g)" \
         
         cd ..
-        sudo xhost + localhost &&
+        sudo xhost local:root &&
             docker run -it $RM $GPU $DISPLAY_VOLUME $VOLUME \
                 -e QT_X11_NO_MITSHM=1 \
                 -e XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" \
